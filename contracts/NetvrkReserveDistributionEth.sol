@@ -4,7 +4,6 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/cryptography/MerkleProofUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/cryptography/MerkleProofUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
@@ -34,6 +33,10 @@ contract NetvrkReserveDistributionEth is
 
     mapping(uint256 => Snapshot) public snapshots;
 
+    /**
+     * @dev Initializes the contract with the given manager address.
+     * @param manager Address of the manager.
+     */
     function initialize(address manager) public initializer {
         __UUPSUpgradeable_init();
         __Context_init_unchained();
@@ -46,6 +49,10 @@ contract NetvrkReserveDistributionEth is
         snapshotIndex = 0;
     }
 
+    /**
+     * @dev Creates a new airdrop with the given Merkle root and reward amount.
+     * @param merkleRoot Merkle root of the airdrop.
+     */
     function createAirdrop(
         bytes32 merkleRoot
     ) public payable onlyRole(MANAGER_ROLE) {
@@ -60,6 +67,12 @@ contract NetvrkReserveDistributionEth is
         );
     }
 
+    /**
+     * @dev Performs a batch airdrop to multiple recipients.
+     * @param recipients Array of recipient addresses.
+     * @param amounts Array of reward amounts for each recipient.
+     * @param merkleProofs Array of Merkle proofs for each recipient.
+     */
     function batchAirdrop(
         address[] memory recipients,
         uint256[] memory amounts,
@@ -96,8 +109,11 @@ contract NetvrkReserveDistributionEth is
         }
     }
 
-    // UUPS proxy function
+    /**
+     * @dev Authorizes the upgrade of the contract.
+     * @param newImplementation Address of the new implementation.
+     */
     function _authorizeUpgrade(
-        address
+        address newImplementation
     ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 }

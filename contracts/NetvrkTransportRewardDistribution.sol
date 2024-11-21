@@ -38,6 +38,11 @@ contract NetvrkTransportRewardDistribution is
 
     mapping(uint256 => Snapshot) public snapshots;
 
+    /**
+     * @dev Initializes the contract with the given reward token and manager address.
+     * @param _rewardToken Address of the reward token contract.
+     * @param _manager Address of the manager.
+     */
     function initialize(
         IERC20 _rewardToken,
         address _manager
@@ -53,6 +58,11 @@ contract NetvrkTransportRewardDistribution is
         snapshotIndex = 0;
     }
 
+    /**
+     * @dev Creates a new airdrop with the given Merkle root and reward amount.
+     * @param merkleRoot Merkle root of the airdrop.
+     * @param reward Total reward for the airdrop.
+     */
     function createAirdrop(
         bytes32 merkleRoot,
         uint256 reward
@@ -72,6 +82,11 @@ contract NetvrkTransportRewardDistribution is
         );
     }
 
+    /**
+     * @dev Updates the current airdrop with a new Merkle root and additional reward amount.
+     * @param merkleRoot New Merkle root of the airdrop.
+     * @param reward Additional reward amount for the airdrop.
+     */
     function updateAirdrop(
         bytes32 merkleRoot,
         uint256 reward
@@ -87,6 +102,12 @@ contract NetvrkTransportRewardDistribution is
         snapshots[snapshotIndex].merkleRoot = merkleRoot;
     }
 
+    /**
+     * @dev Performs a batch airdrop to multiple recipients.
+     * @param recipients Array of recipient addresses.
+     * @param amounts Array of reward amounts for each recipient.
+     * @param merkleProofs Array of Merkle proofs for each recipient.
+     */
     function batchAirdrop(
         address[] memory recipients,
         uint256[] memory amounts,
@@ -131,7 +152,10 @@ contract NetvrkTransportRewardDistribution is
         }
     }
 
-    // Withdraw all tokens from contract by owner
+    /**
+     * @dev Withdraws all tokens from the contract to the specified treasury address.
+     * @param treasury Address of the treasury to receive the tokens.
+     */
     function withdrawFunds(
         address treasury
     ) external virtual onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -140,8 +164,11 @@ contract NetvrkTransportRewardDistribution is
         rewardToken.transfer(treasury, _amount);
     }
 
-    // UUPS proxy function
+    /**
+     * @dev Authorizes the upgrade of the contract.
+     * @param newImplementation Address of the new implementation.
+     */
     function _authorizeUpgrade(
-        address
+        address newImplementation
     ) internal override onlyRole(DEFAULT_ADMIN_ROLE) {}
 }
